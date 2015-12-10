@@ -1,0 +1,67 @@
+/* Monokai color scheme: 
+    http://eclipsecolorthemes.org/?id=52&view=theme
+    http://www.colourlovers.com/palette/1718713/Monokai
+*/
+
+body {
+    background-color: #272822;
+    color: #F8F8F2;
+    font-family: 'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace;
+    font-size: 13px;
+    margin: 0px;
+    padding: 0px;
+}
+
+#app {
+    display: table;
+    width: 100%;
+}
+
+#sidebar, #note {
+    display: table-cell;
+    vertical-align: top;
+}
+
+#sidebar {
+    width: 120px;
+    height: 100vh;
+    min-width: 120px;
+    border-left: 1px solid #757575;
+}
+
+#sidebar .tab {
+    color: #D0D0D0;
+    border-bottom: 1px solid #272822;
+    padding: 4px;
+}
+#sidebar .selected {
+    background-color: #757575;
+    color: #000;
+}
+
+#note {
+    display: table-cell;
+    vertical-align: top;
+    padding: 10px;
+    padding-left: 14px;
+    padding-right: 14px;
+}
+
+#note #title:focus  {
+    outline: 1px solid #757575;
+}
+
+#note #content:focus {
+    outline: none;
+}
+
+#note #title {
+    color: #B0B0B0;
+    font-size: 26px;
+    font-weight: bold;
+    margin: 0px;
+}
+
+#note #content {
+    padding-left: 4px;
+}
