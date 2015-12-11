@@ -1,6 +1,8 @@
 (function () {
   "use strict";
 
+    /* TODO: stretch the text area to catch clicks */
+
     document.getElementById('content').onkeydown = function(e) {
         if(e.keyCode==9) {
             e.preventDefault();

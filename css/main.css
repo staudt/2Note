@@ -29,6 +29,21 @@ body {
     border-left: 1px solid #757575;
 }
 
+#sidebar #options {
+    margin: 6px;
+    margin-left: 12px;
+    margin-right: 12px;
+    padding: 2px;
+    text-align: center;
+}
+
+.button {
+    border: 1px solid #757575;
+    background-color: #757575;
+    border-radius: 4px;
+    color: #000;
+}
+
 #sidebar .tab {
     color: #D0D0D0;
     border-bottom: 1px solid #272822;
@@ -67,3 +82,4 @@ body {
     white-space: pre-wrap;
     tab-size: 4; -moz-tab-size: 4; -o-tab-size: 4;
 }
+
