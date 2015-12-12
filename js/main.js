@@ -10,7 +10,7 @@ function newUuid() {
 
         function NoteModel(title, content, uuid) {
             Object.call(this);
-            this.uuid = uuid ? uuid : 'note:' + newUuid();
+            this.uuid = uuid ? uuid : 'note-' + newUuid();
             this.title = title ? title : 'New note';
             this.content = content ? content : '';
         }; NoteModel.prototype = Object.create(Object.prototype);
@@ -61,8 +61,21 @@ function newUuid() {
             this.updateNote(note);
         }
 
+        NoteCollection.prototype.getNoteByUuid = function(uuid) {
+            for (var i=0;i<this.notes.length;i++) {
+                if (this.notes[i].uuid == uuid) {
+                    return this.notes[i];
+                }
+            }
+            return null;
+        }
+
         NoteCollection.prototype.updateNote = function(note) {
             localStorage.setItem(note.uuid, JSON.stringify(note));
+        }
+
+        NoteCollection.prototype.setCurrentNote = function(note) {
+            this.currentIndex = this.notes.indexOf(note);
         }
 
         NoteCollection.prototype.getCurrentNote = function() {
@@ -78,17 +91,13 @@ function newUuid() {
             Object.call(this);
             this.collection = new NoteCollection();
             if (!this.collection.setup()) {
-                this.setContent('Error! Could not retrieve data', 'Are you using an old browser?');
+                alert('Error! Could not retrieve data. Are you using an old browser?');
             }
             this.setupTabs();
-            this.setupEvents();
-            this.setContent(
-                this.collection.getCurrentNote().title,
-                this.collection.getCurrentNote().content
-            );
+            this.setupNoteEvents();
         }; NoteView.prototype = Object.create(Object.prototype);
 
-        NoteView.prototype.setupEvents = function() {
+        NoteView.prototype.setupNoteEvents = function() {
             $('#title').on('keyup focusout', function (e) {
                 var note = noteView.collection.getCurrentNote();
                 note.title = $('#title').html();
@@ -101,15 +110,44 @@ function newUuid() {
             });
         }
 
-        NoteView.prototype.setupTabs = function() {
-            $.each(this.collection.notes, function (i, note) {
-                $('<div class="tab"/>').html(note.title).insertBefore("#addtab");;
-            });
+        NoteView.prototype.updateTabEvents = function() {
+            $('#sidebar').find('#addtab').click(function() {
+                noteView.newTab();
+            })
+            $('#sidebar').find('.note').click(function(e) {
+                noteView.selectTab(e.target.id);
+            })
         }
 
-        NoteView.prototype.setContent = function(title, content) {
-            $('#title').html(title);
-            $('#content').html(content ? content : '');
+        NoteView.prototype.newTab = function() {
+            noteView.collection.addNote(new NoteModel('New note'));
+            noteView.setupTabs();
+
+        }
+
+        NoteView.prototype.selectTab = function(id) {
+            this.collection.setCurrentNote(this.collection.getNoteByUuid(id));
+            this.setupTabs();
+        }
+
+        NoteView.prototype.setupTabs = function() {
+            $('#sidebar').find('div.note').remove();
+            $.each(this.collection.notes, function (i, note) {
+                $('<div class="tab note"/>').attr('id', note.uuid).html(note.title).insertBefore("#addtab");
+            });
+            this.updateSelectedTab();
+            this.updateTabEvents();
+        }
+
+        NoteView.prototype.updateSelectedTab = function() {
+            $('#sidebar').find("div.selected").removeClass('selected');
+            $('#sidebar').find("#" + this.collection.getCurrentNote().uuid).addClass('selected');
+            this.updateContent();
+        }
+
+        NoteView.prototype.updateContent = function() {
+            $('#title').html(this.collection.getCurrentNote().title);
+            $('#content').html(this.collection.getCurrentNote().content);
         }
 
         return NoteView;
