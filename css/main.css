@@ -10,6 +10,7 @@ body {
     font-size: 13px;
     margin: 0px;
     padding: 0px;
+    overflow-y: scroll;
 }
 
 #app {
@@ -28,30 +29,39 @@ body {
     min-width: 120px;
     border-left: 1px solid #757575;
 }
-
-#sidebar #options {
-    margin: 6px;
-    margin-left: 12px;
-    margin-right: 12px;
-    padding: 2px;
-    text-align: center;
-}
-
-.button {
-    border: 1px solid #757575;
-    background-color: #757575;
-    border-radius: 4px;
-    color: #000;
-}
-
 #sidebar .tab {
     color: #D0D0D0;
-    border-bottom: 1px solid #272822;
     padding: 4px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    width: 105px;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: clip; 
+}
+#sidebar .tab:hover {
+    background-color: #757575;
+    color: #000;
+    cursor: default;
 }
 #sidebar .selected {
     background-color: #757575;
     color: #000;
+    font-weight: bold;
+}
+#sidebar #addtab {
+    margin-top: 4px;
+    width: 20px;
+    background-color: #464646;
+    color: #000;
+    text-align: center;
+    font-weight: bold;
+}
+#sidebar #addtab:hover {
+    background-color: #757575;    
+    cursor: default;
 }
 
 #note {
@@ -65,7 +75,6 @@ body {
 #note #title:focus  {
     outline: 1px solid #757575;
 }
-
 #note #content:focus {
     outline: none;
 }
@@ -75,11 +84,20 @@ body {
     font-size: 26px;
     font-weight: bold;
     margin: 0px;
+    min-height: 30px;
+    border-bottom: 1px solid #404040;
 }
 
 #note #content {
     padding-left: 4px;
     white-space: pre-wrap;
     tab-size: 4; -moz-tab-size: 4; -o-tab-size: 4;
+    height: 90vh;
 }
 
+.button {
+    border: 1px solid #757575;
+    background-color: #757575;
+    border-radius: 4px;
+    color: #000;
+}
