@@ -32,33 +32,56 @@ function newUuid() {
             } 
             /* first timer? */
             if (!localStorage.getItem('notes')) {
-                this.addNote(new NoteModel('First note!', 'Start writing here'));
-            }
-            var uuids = JSON.parse(localStorage.getItem('notes'));
-            var note, rawnote;
-            for (var i=0;i<uuids.length;i++) {
-                note = new NoteModel();
-                note.uuid = uuids[i];
-                rawnote = JSON.parse(localStorage.getItem(note.uuid));
-                if (rawnote) {
-                    note.title = rawnote.title;
-                    note.content = rawnote.content;
-                } else {
-                    note.title = "?";
+                this.addNote(new NoteModel('Welcome!', 'This is your first note. Start writing!'));
+            } else {
+                var uuids = JSON.parse(localStorage.getItem('notes'));
+                var note, rawnote;
+                for (var i=0;i<uuids.length;i++) {
+                    note = new NoteModel();
+                    note.uuid = uuids[i];
+                    rawnote = JSON.parse(localStorage.getItem(note.uuid));
+                    if (rawnote) {
+                        note.title = rawnote.title;
+                        note.content = rawnote.content;
+                    } else {
+                        note.title = "?";
+                    }
+                    this.notes.push(note);
                 }
-                this.notes.push(note);
             }
             return true;
         }
 
         NoteCollection.prototype.addNote = function(note) {
             this.notes.push(note);
+            this.updateNote(note);
+            this.updateIndex();
+            this.currentIndex = this.notes.length-1;
+        }
+
+        NoteCollection.prototype.updateNote = function(note) {
+            localStorage.setItem(note.uuid, JSON.stringify(note));
+        }
+
+        NoteCollection.prototype.deleteNote = function(note) {
+            localStorage.removeItem(note.uuid);
+            var index = this.notes.indexOf(note);
+            this.notes.splice(index, 1);
+            if (index == this.currentIndex)
+                this.currentIndex = index > (this.notes.length-1) ? 0 : index;
+            if (this.notes.length > 0) {
+                this.updateIndex();
+            } else {
+                this.addNote(new NoteModel('All clear'));
+            }
+        }
+
+        NoteCollection.prototype.updateIndex = function() {
             var uuids = [];
             for (var i=0;i<this.notes.length;i++) {
                 uuids.push(this.notes[i].uuid);
             }
             localStorage.setItem('notes', JSON.stringify(uuids));
-            this.updateNote(note);
         }
 
         NoteCollection.prototype.getNoteByUuid = function(uuid) {
@@ -68,10 +91,6 @@ function newUuid() {
                 }
             }
             return null;
-        }
-
-        NoteCollection.prototype.updateNote = function(note) {
-            localStorage.setItem(note.uuid, JSON.stringify(note));
         }
 
         NoteCollection.prototype.setCurrentNote = function(note) {
@@ -101,6 +120,7 @@ function newUuid() {
             $('#title').on('keyup focusout', function (e) {
                 var note = noteView.collection.getCurrentNote();
                 note.title = $('#title').html();
+                $('#sidebar').find('#' + note.uuid).html(note.title);
                 noteView.collection.updateNote(note);
             });
             $('#content').on('keyup focusout', function (e) {
@@ -108,12 +128,17 @@ function newUuid() {
                 note.content = $('#content').html();
                 noteView.collection.updateNote(note);
             });
-        }
-
-        NoteView.prototype.updateTabEvents = function() {
             $('#sidebar').find('#addtab').click(function() {
                 noteView.newTab();
             })
+            $('#delete').click(function (e) {
+                if(confirm('Are you sure you want delete this note?')) {
+                    noteView.deleteCurrentNote();
+                }
+            });
+        }
+
+        NoteView.prototype.updateTabEvents = function() {
             $('#sidebar').find('.note').click(function(e) {
                 noteView.selectTab(e.target.id);
             })
@@ -122,7 +147,6 @@ function newUuid() {
         NoteView.prototype.newTab = function() {
             noteView.collection.addNote(new NoteModel('New note'));
             noteView.setupTabs();
-
         }
 
         NoteView.prototype.selectTab = function(id) {
@@ -148,6 +172,11 @@ function newUuid() {
         NoteView.prototype.updateContent = function() {
             $('#title').html(this.collection.getCurrentNote().title);
             $('#content').html(this.collection.getCurrentNote().content);
+        }
+
+        NoteView.prototype.deleteCurrentNote = function() {
+            this.collection.deleteNote(this.collection.getCurrentNote());
+            this.setupTabs();
         }
 
         return NoteView;

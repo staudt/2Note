@@ -72,6 +72,9 @@ body {
     padding-right: 14px;
 }
 
+#note #delete {
+    float: right;
+}
 #note #title:focus  {
     outline: 1px solid #757575;
 }
@@ -96,8 +99,15 @@ body {
 }
 
 .button {
-    border: 1px solid #757575;
-    background-color: #757575;
+    background-color: #464646;
     border-radius: 4px;
     color: #000;
+    padding: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+    font-weight: bold;
+    cursor: default;
+}
+.button:hover {
+    background-color: #757575;
 }
